@@ -578,6 +578,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _running = false;
+    _controller.dispose();
     super.dispose();
   }
 
@@ -745,7 +746,9 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
             ? Text(
                 widget.text,
                 style: widget.style,
-                textScaler: widget.textScaler,
+                textScaler: widget.textScaleFactor != null
+                    ? TextScaler.linear(widget.textScaleFactor!)
+                    : null,
               )
             : _buildBlankSpace();
         return alignment == null
