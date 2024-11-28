@@ -699,7 +699,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
 
     final richTextWidget = Text.rich(
       span,
-      textScaler: TextScaler.linear(widget.textScaleFactor),
+      textScaleFactor: widget.textScaleFactor,
     ).build(context) as RichText;
     final renderObject = richTextWidget.createRenderObject(context);
     renderObject.layout(constraints);
