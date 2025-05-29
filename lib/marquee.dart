@@ -98,7 +98,7 @@ class _IntegralCurve extends Curve {
 ///   scrolling and manual scrolling enabled.
 class Marquee extends StatefulWidget {
   Marquee({
-    super.key,
+    Key? key,
     required this.text,
     this.style,
     this.textScaleFactor = 1.0,
@@ -141,7 +141,7 @@ class Marquee extends StatefulWidget {
           "The fadingEdgeGradientFractionOnEnd value should be between 0 and "
           "1, inclusive",
         ),
-        assert(numberOfRounds == null || numberOfRounds > 0),
+        // assert(numberOfRounds == null || numberOfRounds > 0),
         assert(
           accelerationDuration >= Duration.zero,
           "The accelerationDuration cannot be negative as time travel isn't "
@@ -154,7 +154,8 @@ class Marquee extends StatefulWidget {
         ),
         this.accelerationCurve = _IntegralCurve(accelerationCurve),
         this.decelerationCurve = _IntegralCurve(decelerationCurve),
-        this.textScaler = TextScaler.linear(textScaleFactor);
+        this.textScaler = TextScaler.linear(textScaleFactor),
+        super(key: key);
 
   /// The text to be displayed.
   ///
@@ -545,9 +546,9 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
   bool _running = false;
   bool _isOnPause = false;
   int _roundCounter = 0;
-  bool get isDone => widget.numberOfRounds == null
+  bool get isDone => (widget.numberOfRounds == null
       ? false
-      : widget.numberOfRounds == _roundCounter;
+      : widget.numberOfRounds == _roundCounter);
   bool get showFading =>
       !widget.showFadingOnlyWhenScrolling ? true : !_isOnPause;
 
@@ -555,6 +556,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (widget.numberOfRounds == 0) return;
       if (!_running) {
         _running = true;
         if (_controller.hasClients) {
@@ -582,7 +584,6 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _running = false;
-    _controller.dispose();
     super.dispose();
   }
 
@@ -751,9 +752,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
             ? Text(
                 widget.text,
                 style: widget.style,
-                textScaler: widget.textScaleFactor != null
-                    ? TextScaler.linear(widget.textScaleFactor!)
-                    : null,
+                textScaler: TextScaler.linear(widget.textScaleFactor),
               )
             : _buildBlankSpace();
         return alignment == null
