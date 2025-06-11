@@ -119,6 +119,7 @@ class Marquee extends StatefulWidget {
     this.decelerationDuration = Duration.zero,
     Curve decelerationCurve = Curves.decelerate,
     this.onDone,
+    this.shrinkWrap = false,
   })  : assert(!blankSpace.isNaN),
         assert(blankSpace >= 0, "The blankSpace needs to be positive or zero."),
         assert(blankSpace.isFinite),
@@ -515,6 +516,9 @@ class Marquee extends StatefulWidget {
   /// finished scrolled the specified number of rounds.
   final VoidCallback? onDone;
 
+  /// If the internal ListView should use [ListView.shrinkWrap]. Can help with rendering errors.
+  final bool shrinkWrap;
+
   @override
   State<StatefulWidget> createState() => _MarqueeState();
 }
@@ -741,6 +745,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
       scrollDirection: widget.scrollAxis,
       reverse: widget.textDirection == TextDirection.rtl,
       physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: widget.shrinkWrap,
       itemBuilder: (_, i) {
         final text = i.isEven
             ? Text(
